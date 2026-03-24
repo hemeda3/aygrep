@@ -14,11 +14,17 @@
 
 ayg builds a sparse n-gram inverted index for code search in large repositories. Build once, then search candidate files instead of rescanning the whole tree.
 
-On this local M3 Max, the Homebrew-installed CLI returned `MAX_FILE_SIZE` from Chromium in `59-64ms` steady-state and `0.25s` after cold prep. The matching `rg -n 'MAX_FILE_SIZE' . >/dev/null` run took `29.24s` warm and `48.20s` after cold prep.
+Published results currently range from `3.3x` to `129x` on GitHub Actions Linux hot-cache queries and about `193x` to `460x` wall-clock on local Chromium, depending on cache state, query selectivity, and scan mode.
 
 **Built for AI coding agents and humans** who run many searches per session.
 
 Based on reverse-engineering [Cursor's "Fast regex search"](https://cursor.com/blog/fast-regex-search) blog post (March 2026, Vicent Marti).
+
+<p align="center">
+  <a href="https://hemeda3.github.io/aygrep/">
+    <img src="assets/hero-comparison.svg" alt="Benchmark snapshot showing published GitHub Actions Linux numbers." width="100%">
+  </a>
+</p>
 
 ---
 
@@ -111,16 +117,16 @@ March 24, 2026. `ubuntu-latest` runner, Linux kernel corpus, 79,225 indexed file
 
 | Query | ayg cold | ayg hot | rg cold | rg hot | Cold speedup | Hot speedup | Files |
 |-------|---------:|--------:|--------:|-------:|-------------:|------------:|------:|
-| `PM_RESUME` | **144.6ms** | **6.2ms** | 12,794ms | 751ms | **88x** | **121x** | 13 |
-| `EXPORT_SYMBOL_GPL` | **1,304.3ms** | **61.6ms** | 12,787ms | 801ms | **9.8x** | **13x** | 3,130 |
-| `Copyright` | **8,779.8ms** | **462.3ms** | 12,704ms | 1,563ms | **1.4x** | **3.4x** | 49,481 |
-| `mutex_lock` | **1,506.4ms** | **72.2ms** | 12,712ms | 841ms | **8.4x** | **12x** | 5,472 |
-| `struct device` | **4,545.3ms** | **224.6ms** | 12,707ms | 922ms | **2.8x** | **4.1x** | 11,408 |
+| `PM_RESUME` | **155.3ms** | **5.8ms** | 13,129ms | 747ms | **85x** | **129x** | 13 |
+| `EXPORT_SYMBOL_GPL` | **1,814.3ms** | **61.7ms** | 13,112ms | 891ms | **7.2x** | **14x** | 3,130 |
+| `Copyright` | **12,411.7ms** | **460.9ms** | 13,697ms | 1,509ms | **1.1x** | **3.3x** | 49,481 |
+| `mutex_lock` | **2,118.7ms** | **72.3ms** | 13,203ms | 875ms | **6.2x** | **12x** | 5,472 |
+| `struct device` | **6,406.0ms** | **221.2ms** | 13,253ms | 918ms | **2.1x** | **4.2x** | 11,408 |
 
 | State | Build time | ayg total | ayg scan total | rg total | Speedup |
 |-------|-----------:|----------:|---------------:|---------:|--------:|
-| Cold | **29.79s** | **16,280.4ms** | **16,199.8ms** | 63,704.0ms | **3.9x** |
-| Hot | **29.79s** | **826.9ms** | **822.8ms** | 4,878.0ms | **5.9x** |
+| Cold | **29.46s** | **22,906.0ms** | **22,803.6ms** | 66,394.0ms | **2.9x** |
+| Hot | **29.46s** | **821.9ms** | **817.9ms** | 4,940.0ms | **6.0x** |
 
 #### Local macOS sample
 

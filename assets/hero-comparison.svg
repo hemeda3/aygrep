@@ -1,64 +1,99 @@
-<svg width="1080" height="500" viewBox="0 0 1080 500" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
-  <title id="title">ayg vs ripgrep latency on Chromium</title>
-  <desc id="desc">Bar chart comparing ayg and ripgrep for MAX_FILE_SIZE on Chromium across warm and cold scenarios on an M3 Max MacBook Pro.</desc>
+<svg width="1200" height="540" viewBox="0 0 1200 540" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">GitHub Actions benchmark: ayg vs ripgrep</title>
+  <desc id="desc">Simple horizontal bar chart comparing ayg and ripgrep on the Linux kernel benchmark from GitHub Actions hot-cache runs.</desc>
 
-  <rect width="1080" height="500" rx="28" fill="#0C1222"/>
-  <rect x="1" y="1" width="1078" height="498" rx="27" stroke="#24304A"/>
+  <rect width="1200" height="540" rx="24" fill="#F8FAFC"/>
+  <rect x="1" y="1" width="1198" height="538" rx="23" stroke="#E2E8F0"/>
 
-  <text x="42" y="54" fill="#F8FAFC" font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="30" font-weight="700">
-    Chromium search latency
+  <text x="48" y="64" fill="#0F172A" font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="34" font-weight="800">
+    GitHub Actions benchmark
   </text>
-  <text x="42" y="84" fill="#93A4C3" font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="16">
-    MAX_FILE_SIZE on 436,610 files · lower is better · log scale
+  <text x="48" y="94" fill="#475569" font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="18">
+    Linux kernel, hot cache, published CI numbers, lower is better
   </text>
 
-  <rect x="813" y="34" width="106" height="28" rx="14" fill="#15203A"/>
-  <rect x="823" y="44" width="14" height="8" rx="4" fill="#FF8A3D"/>
-  <text x="845" y="52" fill="#D8E0EF" font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="14">ayg</text>
+  <rect x="48" y="116" width="122" height="28" rx="14" fill="#FFF7ED"/>
+  <text x="109" y="135" text-anchor="middle" fill="#9A3412" font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="14" font-weight="700">
+    ayg
+  </text>
+  <rect x="182" y="116" width="122" height="28" rx="14" fill="#E2E8F0"/>
+  <text x="243" y="135" text-anchor="middle" fill="#334155" font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="14" font-weight="700">
+    ripgrep
+  </text>
 
-  <rect x="930" y="34" width="108" height="28" rx="14" fill="#15203A"/>
-  <rect x="940" y="44" width="14" height="8" rx="4" fill="#70819F"/>
-  <text x="962" y="52" fill="#D8E0EF" font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="14">ripgrep</text>
+  <text x="48" y="186" fill="#0F172A" font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="18" font-weight="700">
+    PM_RESUME
+  </text>
+  <rect x="260" y="170" width="3" height="16" rx="8" fill="#F97316"/>
+  <text x="275" y="183" fill="#9A3412" font-family="SFMono-Regular, ui-monospace, Menlo, Consolas, monospace" font-size="14" font-weight="700">5.8ms</text>
+  <rect x="260" y="196" width="202" height="16" rx="8" fill="#94A3B8"/>
+  <text x="474" y="209" text-anchor="end" fill="#334155" font-family="SFMono-Regular, ui-monospace, Menlo, Consolas, monospace" font-size="14" font-weight="700">747ms</text>
+  <text x="510" y="196" fill="#9A3412" font-family="SFMono-Regular, ui-monospace, Menlo, Consolas, monospace" font-size="16" font-weight="800">129x</text>
 
-  <line x1="360" y1="410" x2="980" y2="410" stroke="#2A3550"/>
-  <line x1="360" y1="122" x2="360" y2="410" stroke="#22304D" stroke-dasharray="4 8"/>
-  <line x1="477" y1="122" x2="477" y2="410" stroke="#22304D" stroke-dasharray="4 8"/>
-  <line x1="594" y1="122" x2="594" y2="410" stroke="#22304D" stroke-dasharray="4 8"/>
-  <line x1="711" y1="122" x2="711" y2="410" stroke="#22304D" stroke-dasharray="4 8"/>
-  <line x1="828" y1="122" x2="828" y2="410" stroke="#22304D" stroke-dasharray="4 8"/>
-  <line x1="945" y1="122" x2="945" y2="410" stroke="#22304D" stroke-dasharray="4 8"/>
+  <text x="48" y="250" fill="#0F172A" font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="18" font-weight="700">
+    EXPORT_SYMBOL_GPL
+  </text>
+  <rect x="260" y="234" width="17" height="16" rx="8" fill="#F97316"/>
+  <text x="289" y="247" fill="#9A3412" font-family="SFMono-Regular, ui-monospace, Menlo, Consolas, monospace" font-size="14" font-weight="700">61.7ms</text>
+  <rect x="260" y="260" width="241" height="16" rx="8" fill="#94A3B8"/>
+  <text x="513" y="273" text-anchor="end" fill="#334155" font-family="SFMono-Regular, ui-monospace, Menlo, Consolas, monospace" font-size="14" font-weight="700">891ms</text>
+  <text x="549" y="260" fill="#9A3412" font-family="SFMono-Regular, ui-monospace, Menlo, Consolas, monospace" font-size="16" font-weight="800">14x</text>
 
-  <text x="348" y="438" text-anchor="middle" fill="#8DA0C2" font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="13">0.1ms</text>
-  <text x="477" y="438" text-anchor="middle" fill="#8DA0C2" font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="13">1ms</text>
-  <text x="594" y="438" text-anchor="middle" fill="#8DA0C2" font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="13">10ms</text>
-  <text x="711" y="438" text-anchor="middle" fill="#8DA0C2" font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="13">100ms</text>
-  <text x="828" y="438" text-anchor="middle" fill="#8DA0C2" font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="13">1s</text>
-  <text x="945" y="438" text-anchor="middle" fill="#8DA0C2" font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="13">10s</text>
+  <text x="48" y="314" fill="#0F172A" font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="18" font-weight="700">
+    mutex_lock
+  </text>
+  <rect x="260" y="298" width="19" height="16" rx="8" fill="#F97316"/>
+  <text x="291" y="311" fill="#9A3412" font-family="SFMono-Regular, ui-monospace, Menlo, Consolas, monospace" font-size="14" font-weight="700">72.3ms</text>
+  <rect x="260" y="324" width="236" height="16" rx="8" fill="#94A3B8"/>
+  <text x="508" y="337" text-anchor="end" fill="#334155" font-family="SFMono-Regular, ui-monospace, Menlo, Consolas, monospace" font-size="14" font-weight="700">875ms</text>
+  <text x="544" y="324" fill="#9A3412" font-family="SFMono-Regular, ui-monospace, Menlo, Consolas, monospace" font-size="16" font-weight="800">12x</text>
 
-  <text x="42" y="150" fill="#F8FAFC" font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="20" font-weight="700">M3 Max · Warm</text>
-  <text x="42" y="172" fill="#8DA0C2" font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="14">ContentMmap</text>
-  <rect x="360" y="142" width="36" height="16" rx="8" fill="#FF8A3D"/>
-  <rect x="360" y="166" width="611" height="16" rx="8" fill="#70819F"/>
-  <text x="408" y="155" fill="#FFD7BE" font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="13">0.2ms</text>
-  <text x="983" y="179" text-anchor="end" fill="#D8E0EF" font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="13">16.6s</text>
-  <rect x="905" y="138" width="133" height="30" rx="15" fill="#1B2945"/>
-  <text x="971.5" y="157" text-anchor="middle" fill="#FFB27D" font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="14" font-weight="700">126,978×</text>
+  <text x="48" y="378" fill="#0F172A" font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="18" font-weight="700">
+    struct device
+  </text>
+  <rect x="260" y="362" width="60" height="16" rx="8" fill="#F97316"/>
+  <text x="332" y="375" fill="#9A3412" font-family="SFMono-Regular, ui-monospace, Menlo, Consolas, monospace" font-size="14" font-weight="700">221.2ms</text>
+  <rect x="260" y="388" width="248" height="16" rx="8" fill="#94A3B8"/>
+  <text x="520" y="401" text-anchor="end" fill="#334155" font-family="SFMono-Regular, ui-monospace, Menlo, Consolas, monospace" font-size="14" font-weight="700">918ms</text>
+  <text x="556" y="388" fill="#9A3412" font-family="SFMono-Regular, ui-monospace, Menlo, Consolas, monospace" font-size="16" font-weight="800">4.2x</text>
 
-  <text x="42" y="246" fill="#F8FAFC" font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="20" font-weight="700">M3 Max · Truly cold</text>
-  <text x="42" y="268" fill="#8DA0C2" font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="14">ContentMmap · 38GB flood + purge</text>
-  <rect x="360" y="238" width="117" height="16" rx="8" fill="#FF8A3D"/>
-  <rect x="360" y="262" width="611" height="16" rx="8" fill="#70819F"/>
-  <text x="489" y="251" fill="#FFD7BE" font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="13">1.0ms</text>
-  <text x="983" y="275" text-anchor="end" fill="#D8E0EF" font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="13">16.6s</text>
-  <rect x="905" y="234" width="118" height="30" rx="15" fill="#1B2945"/>
-  <text x="964" y="253" text-anchor="middle" fill="#FFB27D" font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="14" font-weight="700">16,567×</text>
+  <text x="48" y="442" fill="#0F172A" font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="18" font-weight="700">
+    Copyright
+  </text>
+  <rect x="260" y="426" width="124" height="16" rx="8" fill="#F97316"/>
+  <text x="396" y="439" fill="#9A3412" font-family="SFMono-Regular, ui-monospace, Menlo, Consolas, monospace" font-size="14" font-weight="700">460.9ms</text>
+  <rect x="260" y="452" width="407" height="16" rx="8" fill="#94A3B8"/>
+  <text x="679" y="465" text-anchor="end" fill="#334155" font-family="SFMono-Regular, ui-monospace, Menlo, Consolas, monospace" font-size="14" font-weight="700">1,509ms</text>
+  <text x="715" y="452" fill="#9A3412" font-family="SFMono-Regular, ui-monospace, Menlo, Consolas, monospace" font-size="16" font-weight="800">3.3x</text>
 
-  <text x="42" y="342" fill="#F8FAFC" font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="20" font-weight="700">M3 Max · Truly cold</text>
-  <text x="42" y="364" fill="#8DA0C2" font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="14">Filesystem scan</text>
-  <rect x="360" y="334" width="223" height="16" rx="8" fill="#FF8A3D"/>
-  <rect x="360" y="358" width="611" height="16" rx="8" fill="#70819F"/>
-  <text x="595" y="347" fill="#FFD7BE" font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="13">8.0ms</text>
-  <text x="983" y="371" text-anchor="end" fill="#D8E0EF" font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="13">16.6s</text>
-  <rect x="915" y="330" width="108" height="30" rx="15" fill="#1B2945"/>
-  <text x="969" y="349" text-anchor="middle" fill="#FFB27D" font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="14" font-weight="700">2,071×</text>
+  <text x="824" y="188" fill="#0F172A" font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="24" font-weight="800">
+    Totals
+  </text>
+  <text x="824" y="236" fill="#475569" font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="18" font-weight="700">
+    Hot total
+  </text>
+  <rect x="824" y="250" width="37" height="16" rx="8" fill="#F97316"/>
+  <rect x="824" y="278" width="220" height="16" rx="8" fill="#94A3B8"/>
+  <text x="873" y="263" fill="#9A3412" font-family="SFMono-Regular, ui-monospace, Menlo, Consolas, monospace" font-size="14" font-weight="700">821.9ms</text>
+  <text x="1056" y="291" text-anchor="end" fill="#334155" font-family="SFMono-Regular, ui-monospace, Menlo, Consolas, monospace" font-size="14" font-weight="700">4,940ms</text>
+  <text x="824" y="324" fill="#9A3412" font-family="SFMono-Regular, ui-monospace, Menlo, Consolas, monospace" font-size="22" font-weight="800">
+    6.0x faster
+  </text>
+
+  <text x="824" y="376" fill="#475569" font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="18" font-weight="700">
+    Cold total
+  </text>
+  <text x="824" y="404" fill="#334155" font-family="SFMono-Regular, ui-monospace, Menlo, Consolas, monospace" font-size="16" font-weight="700">
+    22,906.0ms vs 66,394.0ms
+  </text>
+  <text x="824" y="432" fill="#334155" font-family="SFMono-Regular, ui-monospace, Menlo, Consolas, monospace" font-size="16" font-weight="700">
+    2.9x faster
+  </text>
+
+  <text x="824" y="476" fill="#475569" font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="16" font-weight="700">
+    Build 29.46s
+  </text>
+  <text x="824" y="502" fill="#64748B" font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="15">
+    Runner: ubuntu-latest · 79,225 files · 2 vCPU · 7.8 GiB RAM
+  </text>
 </svg>

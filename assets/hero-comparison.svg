@@ -1,0 +1,64 @@
+<svg width="1080" height="500" viewBox="0 0 1080 500" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">ayg vs ripgrep latency on Chromium</title>
+  <desc id="desc">Bar chart comparing ayg and ripgrep for MAX_FILE_SIZE on Chromium across warm and cold scenarios on an M3 Max MacBook Pro.</desc>
+
+  <rect width="1080" height="500" rx="28" fill="#0C1222"/>
+  <rect x="1" y="1" width="1078" height="498" rx="27" stroke="#24304A"/>
+
+  <text x="42" y="54" fill="#F8FAFC" font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="30" font-weight="700">
+    Chromium search latency
+  </text>
+  <text x="42" y="84" fill="#93A4C3" font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="16">
+    MAX_FILE_SIZE on 436,610 files · lower is better · log scale
+  </text>
+
+  <rect x="813" y="34" width="106" height="28" rx="14" fill="#15203A"/>
+  <rect x="823" y="44" width="14" height="8" rx="4" fill="#FF8A3D"/>
+  <text x="845" y="52" fill="#D8E0EF" font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="14">ayg</text>
+
+  <rect x="930" y="34" width="108" height="28" rx="14" fill="#15203A"/>
+  <rect x="940" y="44" width="14" height="8" rx="4" fill="#70819F"/>
+  <text x="962" y="52" fill="#D8E0EF" font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="14">ripgrep</text>
+
+  <line x1="360" y1="410" x2="980" y2="410" stroke="#2A3550"/>
+  <line x1="360" y1="122" x2="360" y2="410" stroke="#22304D" stroke-dasharray="4 8"/>
+  <line x1="477" y1="122" x2="477" y2="410" stroke="#22304D" stroke-dasharray="4 8"/>
+  <line x1="594" y1="122" x2="594" y2="410" stroke="#22304D" stroke-dasharray="4 8"/>
+  <line x1="711" y1="122" x2="711" y2="410" stroke="#22304D" stroke-dasharray="4 8"/>
+  <line x1="828" y1="122" x2="828" y2="410" stroke="#22304D" stroke-dasharray="4 8"/>
+  <line x1="945" y1="122" x2="945" y2="410" stroke="#22304D" stroke-dasharray="4 8"/>
+
+  <text x="348" y="438" text-anchor="middle" fill="#8DA0C2" font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="13">0.1ms</text>
+  <text x="477" y="438" text-anchor="middle" fill="#8DA0C2" font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="13">1ms</text>
+  <text x="594" y="438" text-anchor="middle" fill="#8DA0C2" font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="13">10ms</text>
+  <text x="711" y="438" text-anchor="middle" fill="#8DA0C2" font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="13">100ms</text>
+  <text x="828" y="438" text-anchor="middle" fill="#8DA0C2" font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="13">1s</text>
+  <text x="945" y="438" text-anchor="middle" fill="#8DA0C2" font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="13">10s</text>
+
+  <text x="42" y="150" fill="#F8FAFC" font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="20" font-weight="700">M3 Max · Warm</text>
+  <text x="42" y="172" fill="#8DA0C2" font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="14">ContentMmap</text>
+  <rect x="360" y="142" width="36" height="16" rx="8" fill="#FF8A3D"/>
+  <rect x="360" y="166" width="611" height="16" rx="8" fill="#70819F"/>
+  <text x="408" y="155" fill="#FFD7BE" font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="13">0.2ms</text>
+  <text x="983" y="179" text-anchor="end" fill="#D8E0EF" font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="13">16.6s</text>
+  <rect x="905" y="138" width="133" height="30" rx="15" fill="#1B2945"/>
+  <text x="971.5" y="157" text-anchor="middle" fill="#FFB27D" font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="14" font-weight="700">126,978×</text>
+
+  <text x="42" y="246" fill="#F8FAFC" font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="20" font-weight="700">M3 Max · Truly cold</text>
+  <text x="42" y="268" fill="#8DA0C2" font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="14">ContentMmap · 38GB flood + purge</text>
+  <rect x="360" y="238" width="117" height="16" rx="8" fill="#FF8A3D"/>
+  <rect x="360" y="262" width="611" height="16" rx="8" fill="#70819F"/>
+  <text x="489" y="251" fill="#FFD7BE" font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="13">1.0ms</text>
+  <text x="983" y="275" text-anchor="end" fill="#D8E0EF" font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="13">16.6s</text>
+  <rect x="905" y="234" width="118" height="30" rx="15" fill="#1B2945"/>
+  <text x="964" y="253" text-anchor="middle" fill="#FFB27D" font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="14" font-weight="700">16,567×</text>
+
+  <text x="42" y="342" fill="#F8FAFC" font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="20" font-weight="700">M3 Max · Truly cold</text>
+  <text x="42" y="364" fill="#8DA0C2" font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="14">Filesystem scan</text>
+  <rect x="360" y="334" width="223" height="16" rx="8" fill="#FF8A3D"/>
+  <rect x="360" y="358" width="611" height="16" rx="8" fill="#70819F"/>
+  <text x="595" y="347" fill="#FFD7BE" font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="13">8.0ms</text>
+  <text x="983" y="371" text-anchor="end" fill="#D8E0EF" font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="13">16.6s</text>
+  <rect x="915" y="330" width="108" height="30" rx="15" fill="#1B2945"/>
+  <text x="969" y="349" text-anchor="middle" fill="#FFB27D" font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="14" font-weight="700">2,071×</text>
+</svg>

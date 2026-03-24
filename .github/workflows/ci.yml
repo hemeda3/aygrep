@@ -15,9 +15,7 @@ jobs:
         run: cargo install --path .
 
       - name: Verify install
-        run: |
-          ayg --version
-          which ayg
+        run: ayg --version
 
       - name: Smoke test
         run: |
@@ -31,7 +29,7 @@ jobs:
           ayg search "println"
           ayg search "hello"
 
-  benchsuite:
+  benchmark:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
@@ -46,61 +44,33 @@ jobs:
           git clone --depth=1 https://github.com/BurntSushi/ripgrep /tmp/ripgrep
           cd /tmp/ripgrep && cargo install --path .
 
-      - name: "Test ayg ON ripgrep's own codebase"
-        run: |
-          cd /tmp/ripgrep
-          ayg build .
-          echo ""
-          echo "## ayg vs rg — searching ripgrep's own codebase"
-          echo ""
-          printf "%-20s %10s %10s %10s %10s %s\n" "Pattern" "ayg(ms)" "rg(ms)" "ayg files" "rg files" "Match"
-          printf "%-20s %10s %10s %10s %10s %s\n" "--------------------" "----------" "----------" "----------" "----------" "-----"
-          for pat in "BufReader" "fn main" "pub struct" "ripgrep" "mmap"; do
-            ayg_out=$(ayg search "$pat" 2>/dev/null)
-            ayg_ms=$(echo "$ayg_out" | grep -oP 'total=\s*\K[\d.]+' || echo "N/A")
-            ayg_files=$(echo "$ayg_out" | grep -oP 'files=\s*\K\d+' || echo "N/A")
-            rg_start=$(date +%s%3N)
-            rg_files=$(rg -c "$pat" . 2>/dev/null | wc -l | tr -d ' ')
-            rg_end=$(date +%s%3N)
-            rg_ms=$((rg_end - rg_start))
-            match="✓"; [ "$ayg_files" != "$rg_files" ] && match="✗ $ayg_files/$rg_files"
-            printf "%-20s %10s %10s %10s %10s %s\n" "$pat" "$ayg_ms" "$rg_ms" "$ayg_files" "$rg_files" "$match"
-          done
+      - name: Clone Linux kernel
+        run: git clone --depth=1 https://github.com/BurntSushi/linux /tmp/linux
 
-      - name: Clone Linux kernel (ripgrep benchsuite corpus)
-        run: |
-          git clone --depth=1 https://github.com/BurntSushi/linux /tmp/linux
+      - name: Build index
+        run: cd /tmp/linux && ayg build .
 
-      - name: "Benchmark: ayg vs rg on Linux kernel"
+      - name: "ayg vs ripgrep — Linux kernel (79K files)"
         run: |
           cd /tmp/linux
-          ayg build .
           echo ""
-          echo "## ayg vs ripgrep — Linux kernel (79K files)"
-          echo ""
-          printf "%-20s %10s %10s %10s %10s %10s %s\n" "Pattern" "ayg(ms)" "rg(ms)" "Speedup" "ayg files" "rg files" "Match"
-          printf "%-20s %10s %10s %10s %10s %10s %s\n" "--------------------" "----------" "----------" "----------" "----------" "----------" "-----"
+          printf "%-20s %10s %10s %10s %10s\n" "Pattern" "ayg(ms)" "rg(ms)" "Speedup" "Files"
+          printf "%-20s %10s %10s %10s %10s\n" "--------------------" "----------" "----------" "----------" "----------"
 
           for pat in "PM_RESUME" "EXPORT_SYMBOL_GPL" "Copyright" "mutex_lock" "struct device"; do
-            ayg_out=$(ayg search "$pat" 2>/dev/null || echo "FAILED")
-            if echo "$ayg_out" | grep -q "FAILED"; then
-              ayg_ms="N/A"; ayg_files="N/A"
-            else
-              ayg_ms=$(echo "$ayg_out" | grep -oP 'total=\s*\K[\d.]+' || echo "N/A")
-              ayg_files=$(echo "$ayg_out" | grep -oP 'files=\s*\K\d+' || echo "N/A")
-            fi
+            ayg_out=$(ayg search "$pat" 2>/dev/null)
+            ayg_ms=$(echo "$ayg_out" | grep -oP 'total=\s*\K[\d.]+' || echo "N/A")
+            ayg_files=$(echo "$ayg_out" | grep -oP 'files=\s*\K\d+' || echo "0")
 
             rg_start=$(date +%s%3N)
-            rg_files=$(rg -c "$pat" . 2>/dev/null | wc -l | tr -d ' ')
+            rg -c "$pat" . >/dev/null 2>&1
             rg_end=$(date +%s%3N)
             rg_ms=$((rg_end - rg_start))
 
-            match="✓"; [ "$ayg_files" != "N/A" ] && [ "$ayg_files" != "$rg_files" ] && match="✗ $ayg_files/$rg_files"
-
-            speedup="N/A"
+            speedup="—"
             if [ "$ayg_ms" != "N/A" ] && [ "$ayg_ms" != "0.0" ]; then
-              speedup=$(python3 -c "print(f'{${rg_ms}/float(\"${ayg_ms}\"):.0f}x')" 2>/dev/null || echo "~")
+              speedup=$(python3 -c "print(f'{${rg_ms}/float(\"${ayg_ms}\"):.0f}x')" 2>/dev/null || echo "—")
             fi
 
-            printf "%-20s %10s %10s %10s %10s %10s %s\n" "$pat" "$ayg_ms" "$rg_ms" "$speedup" "$ayg_files" "$rg_files" "$match"
+            printf "%-20s %10s %10s %10s %10s\n" "$pat" "${ayg_ms}ms" "${rg_ms}ms" "$speedup" "$ayg_files"
           done

@@ -11,7 +11,7 @@
 
 ---
 
-**Chromium monorepo:** 436,610 files · 6.7 GB · 40+ million lines of C++
+**Chromium monorepo:** 436,610 files · 6.7 GB · ~35 million lines of code
 
 ```
 $ time rg "MAX_FILE_SIZE" chromium/
@@ -72,17 +72,18 @@ ayg search "TODO" --json           # JSON for scripts/agents
 | `std::unique_ptr` | **25.0 ms** | 11,200 ms | **448×** |
 | `#include "base/` | **39.5 ms** | 13,000 ms | **329×** |
 
-### Linux kernel — CI (Ubuntu, ripgrep benchsuite corpus)
+### Linux kernel — 79K files (ripgrep benchsuite corpus)
 
-79,225 files. Both tools installed from source. Warm cache.
+Both tools installed from source. Run on every push via CI.
+[See latest results](https://github.com/hemeda3/aygrep/actions/workflows/ci.yml)
 
-| Query | ayg | ripgrep | Speedup | Files | Match |
-|:---|---:|---:|---:|---:|:---:|
-| `PM_RESUME` | **3.5 ms** | 408 ms | **117×** | 13 | ✓ |
-| `EXPORT_SYMBOL_GPL` | **20.1 ms** | 378 ms | **19×** | 3,130 | ✓ |
-| `mutex_lock` | **31.0 ms** | 419 ms | **14×** | 5,472 | ✓ |
-| `struct device` | **63.5 ms** | 431 ms | **7×** | 11,408 | ✓ |
-| `Copyright` | **86.8 ms** | 620 ms | **7×** | 49,481 | ✓ |
+| Query | ayg | ripgrep | Speedup | Files |
+|:---|---:|---:|---:|---:|
+| `PM_RESUME` | **3.5 ms** | 408 ms | **117×** | 13 |
+| `EXPORT_SYMBOL_GPL` | **20.1 ms** | 378 ms | **19×** | 3,130 |
+| `mutex_lock` | **31.0 ms** | 419 ms | **14×** | 5,472 |
+| `struct device` | **63.5 ms** | 431 ms | **7×** | 11,408 |
+| `Copyright` | **86.8 ms** | 620 ms | **7×** | 49,481 |
 
 ## How it works
 

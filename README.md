@@ -51,7 +51,7 @@ cargo install aygrep
 ### Homebrew (macOS/Linux)
 
 ```bash
-brew install hemeda2/tap/ayg
+brew install hemeda3/tap/ayg
 ```
 
 ## Quick start

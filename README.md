@@ -1,6 +1,6 @@
 <div align="center">
   <h1>ayg</h1>
-  <p><strong>Indexed code search for AI agents and humans in nano seconds </strong></p>
+  <p><strong>Indexed code search for AI agents and humans</strong></p>
   <p>
     <a href="https://github.com/hemeda3/aygrep/actions"><img src="https://github.com/hemeda3/aygrep/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
     <a href="https://github.com/hemeda3/aygrep/releases"><img src="https://img.shields.io/github/v/release/hemeda3/aygrep" alt="Release"></a>
@@ -15,14 +15,14 @@
 ayg builds a sparse n-gram inverted index for code search in large repositories.
 Short benchmark summary:
 
-| Corpus | State | ayg | rg | Speedup |
-|--------|-------|-----|----|---------|
-| Linux kernel 40.06 Million line of code  (GitHub Actions) | Hot total | `821.9ms` | `4940.0ms` | `6.0x` |
-| Linux kernel 40.06 Million line of code (GitHub Actions) | Cold total | `22906.0ms` | `66394.0ms` | `2.9x` |
-| Chromium 40.06 Million line of code (local M3 Max) | Warm | `59-64ms` | `29.24s` | `~460x` |
-| Chromium 40.06 Million line of code (local M3 Max) | Cold prep | `0.25s` | `48.20s` | `~193x` |
+| Corpus | Machine | State | ayg | rg | Speedup |
+|--------|---------|-------|-----|----|---------|
+| Chromium · 436,610 indexed files | Local M3 Max | Warm | `59-64ms` | `29.24s` | `~460x` |
+| Chromium · 436,610 indexed files | Local M3 Max | Cold prep | `0.25s` | `48.20s` | `~193x` |
+| Linux kernel · 40.06 Million lines of code · 79,225 indexed files | GitHub Actions · 2 vCPU / 7.8 GiB | Hot total (5 queries) | `821.9ms` | `4940.0ms` | `6.0x` |
+| Linux kernel · 40.06 Million lines of code · 79,225 indexed files | GitHub Actions · 2 vCPU / 7.8 GiB | Cold total (5 queries) | `22906.0ms` | `66394.0ms` | `2.9x` |
 
-Chromium numbers are local CLI wall-clock timings. Linux numbers are CI totals from the published benchmark report.
+Chromium rows are single-query local CLI wall-clock timings for `MAX_FILE_SIZE`. Linux rows are GitHub Actions totals across five queries from the published benchmark report.
 GitHub Actions verification for the Linux sample: [benchmark job #68308182033](https://github.com/hemeda3/aygrep/actions/runs/23475805621/job/68308182033) with `AMD EPYC 7763`, `2` cores, and `7.8Gi` RAM.
 
 **Built for AI coding agents and humans** who run many searches per session.

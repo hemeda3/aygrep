@@ -1,14 +1,22 @@
 name: Release
 
+# Full pipeline: test → build binaries → GitHub release → crates.io → homebrew tap
+#
+# Triggered by: git tag v0.1.1 && git push origin v0.1.1
+# Or use:       ./scripts/release.sh patch
+#
+# Beta tags (v0.1.1-beta.1): prerelease on GitHub only, no crates.io, no brew
+
 on:
   push:
-    tags:
-      - 'v*'            # v0.1.0, v0.1.1-beta.1, v1.0.0, etc.
+    tags: ['v*']
 
 permissions:
   contents: write
 
 jobs:
+
+  # ── Step 1: Test on both platforms ──────────────────────────────
   test:
     strategy:
       matrix:
@@ -29,6 +37,7 @@ jobs:
           $GITHUB_WORKSPACE/target/release/ayg build .
           $GITHUB_WORKSPACE/target/release/ayg search "println"
 
+  # ── Step 2: Build binaries (4 platforms) ────────────────────────
   build:
     needs: test
     strategy:
@@ -46,13 +55,10 @@ jobs:
           - target: aarch64-apple-darwin
             os: macos-latest
             name: ayg-macos-arm64
-
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
-
-      - name: Install Rust
-        uses: dtolnay/rust-toolchain@stable
+      - uses: dtolnay/rust-toolchain@stable
         with:
           targets: ${{ matrix.target }}
 
@@ -66,25 +72,25 @@ jobs:
       - name: Build
         run: cargo build --release --target ${{ matrix.target }}
 
-      - name: Package
+      - name: Package + checksum
         run: |
           cp target/${{ matrix.target }}/release/ayg ${{ matrix.name }}
           chmod +x ${{ matrix.name }}
-          shasum -a 256 ${{ matrix.name }} > ${{ matrix.name }}.sha256 2>/dev/null || sha256sum ${{ matrix.name }} > ${{ matrix.name }}.sha256
+          shasum -a 256 ${{ matrix.name }} > ${{ matrix.name }}.sha256 2>/dev/null || \
+          sha256sum ${{ matrix.name }} > ${{ matrix.name }}.sha256
 
       - name: Upload to GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          # Beta tags → prerelease (users on `brew install` or `cargo install` won't get it)
           prerelease: ${{ contains(github.ref, 'beta') || contains(github.ref, 'rc') || contains(github.ref, 'alpha') }}
           files: |
             ${{ matrix.name }}
             ${{ matrix.name }}.sha256
 
-  # Publish to crates.io — only for stable releases (no beta/rc/alpha)
+  # ── Step 3: Publish to crates.io (stable only) ─────────────────
   publish-crate:
     needs: build
-    if: "!contains(github.ref, 'beta') && !contains(github.ref, 'rc') && !contains(github.ref, 'alpha')"
+    if: ${{ !contains(github.ref, 'beta') && !contains(github.ref, 'rc') && !contains(github.ref, 'alpha') }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -93,3 +99,84 @@ jobs:
         env:
           CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
         run: cargo publish
+
+  # ── Step 4: Update Homebrew tap (stable only) ───────────────────
+  update-homebrew:
+    needs: build
+    if: ${{ !contains(github.ref, 'beta') && !contains(github.ref, 'rc') && !contains(github.ref, 'alpha') }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get release version
+        id: version
+        run: echo "tag=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+
+      - name: Wait for release assets
+        run: sleep 30
+
+      - name: Get SHA256 of binaries
+        id: sha
+        run: |
+          VERSION=${{ steps.version.outputs.tag }}
+          BASE="https://github.com/hemeda3/aygrep/releases/download/${VERSION}"
+          echo "macos_arm=$(curl -sL ${BASE}/ayg-macos-arm64 | sha256sum | awk '{print $1}')" >> $GITHUB_OUTPUT
+          echo "macos_amd=$(curl -sL ${BASE}/ayg-macos-amd64 | sha256sum | awk '{print $1}')" >> $GITHUB_OUTPUT
+          echo "linux_amd=$(curl -sL ${BASE}/ayg-linux-amd64 | sha256sum | awk '{print $1}')" >> $GITHUB_OUTPUT
+
+      - name: Update Homebrew formula
+        env:
+          GH_TOKEN: ${{ secrets.HOMEBREW_TAP_TOKEN }}
+        run: |
+          VERSION=${{ steps.version.outputs.tag }}
+          git clone https://x-access-token:${GH_TOKEN}@github.com/hemeda3/homebrew-tap.git /tmp/tap
+          cd /tmp/tap
+
+          cat > Formula/ayg.rb << 'FORMULA'
+          class Ayg < Formula
+            desc "Indexed grep for large codebases — 13,806x faster than ripgrep"
+            homepage "https://github.com/hemeda3/aygrep"
+            version "VERSION_PLACEHOLDER"
+            license "MIT"
+
+            on_macos do
+              on_arm do
+                url "https://github.com/hemeda3/aygrep/releases/download/VERSION_PLACEHOLDER/ayg-macos-arm64"
+                sha256 "SHA_MACOS_ARM"
+              end
+              on_intel do
+                url "https://github.com/hemeda3/aygrep/releases/download/VERSION_PLACEHOLDER/ayg-macos-amd64"
+                sha256 "SHA_MACOS_AMD"
+              end
+            end
+
+            on_linux do
+              on_intel do
+                url "https://github.com/hemeda3/aygrep/releases/download/VERSION_PLACEHOLDER/ayg-linux-amd64"
+                sha256 "SHA_LINUX_AMD"
+              end
+            end
+
+            def install
+              bin.install Dir["ayg-*"].first => "ayg"
+            end
+
+            test do
+              assert_match "ayg", shell_output("#{bin}/ayg --version")
+            end
+          end
+          FORMULA
+
+          # Replace placeholders
+          VER="${VERSION#v}"
+          sed -i "s/VERSION_PLACEHOLDER/${VER}/g" Formula/ayg.rb
+          sed -i "s/SHA_MACOS_ARM/${{ steps.sha.outputs.macos_arm }}/g" Formula/ayg.rb
+          sed -i "s/SHA_MACOS_AMD/${{ steps.sha.outputs.macos_amd }}/g" Formula/ayg.rb
+          sed -i "s/SHA_LINUX_AMD/${{ steps.sha.outputs.linux_amd }}/g" Formula/ayg.rb
+
+          # Remove leading whitespace from heredoc
+          sed -i 's/^          //' Formula/ayg.rb
+
+          git config user.email "ci@ayg.dev"
+          git config user.name "ayg-release"
+          git add -A
+          git commit -m "Update ayg to ${VERSION}"
+          git push

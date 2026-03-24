@@ -1,6 +1,11 @@
 name: CI
 on: [push, pull_request]
 
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
 jobs:
   test:
     strategy:
@@ -35,6 +40,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@stable
+      - uses: actions/configure-pages@v5
 
       - name: Install ayg
         run: cargo install --path .
@@ -56,3 +62,29 @@ jobs:
           if [ -f /tmp/ayg-bench/results.md ]; then
             cat /tmp/ayg-bench/results.md >> "$GITHUB_STEP_SUMMARY"
           fi
+
+      - name: Upload benchmark package
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ci-benchmark-linux
+          path: /tmp/ayg-bench/public
+          if-no-files-found: warn
+
+      - name: Upload Pages artifact
+        if: success() && github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: /tmp/ayg-bench/public
+
+  deploy-benchmark-pages:
+    if: success() && github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
+    needs: benchmark
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy benchmark site
+        id: deployment
+        uses: actions/deploy-pages@v4

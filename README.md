@@ -76,7 +76,8 @@ The benchmark report now uses the same format locally and in GitHub Actions:
 - total search time summary for four rows:
   Chromium cold, Chromium hot, Linux cold, Linux hot
 
-The push/PR CI job keeps a Linux-kernel benchmark in the logs so CI stays fast.
+The push/PR CI job keeps a Linux-kernel benchmark on GitHub Actions runners so CI stays fast.
+On pushes to `main` or `master`, that same CI benchmark job also auto-publishes the latest public benchmark page from GitHub Actions.
 For the full local report on Linux and Chromium, run:
 
 ```bash
@@ -86,8 +87,15 @@ For the full local report on Linux and Chromium, run:
 ```
 
 There is also a manual GitHub Actions workflow named `Benchmarks` for running `linux`, `chromium`, or `both` on demand with the same report format.
+That workflow now generates:
 
-The default `benchmark` job runs `./scripts/benchmark-full.sh linux`.
+- a formatted public GitHub Pages report
+- a downloadable ZIP package with the full report
+- the raw Markdown report as an artifact
+
+For the public page to deploy, set the repository Pages source to `GitHub Actions` once in GitHub settings.
+
+The default CI `benchmark` job runs `./scripts/benchmark-full.sh linux` and publishes the latest Linux report automatically on pushes.
 Chromium uses the same cold + hot format through `./scripts/benchmark-full.sh chromium` or the manual `Benchmarks` workflow.
 
 ---

@@ -8,6 +8,7 @@ ROOT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 AYG="${AYG_BIN:-$ROOT_DIR/target/release/ayg}"
 BENCH_DIR="${BENCH_DIR:-/tmp/ayg-bench}"
 RESULTS_FILE="$BENCH_DIR/results.md"
+PUBLIC_DIR="$BENCH_DIR/public"
 
 mkdir -p "$BENCH_DIR"
 exec > >(tee "$RESULTS_FILE") 2>&1
@@ -390,4 +391,4 @@ if [ "${#SUMMARY_ROWS[@]}" -gt 0 ]; then
     print_global_summary
 fi
 
-echo "results_file=$RESULTS_FILE"
+python3 "$ROOT_DIR/scripts/render-benchmark-site.py" "$RESULTS_FILE" "$PUBLIC_DIR"

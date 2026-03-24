@@ -53,11 +53,17 @@ brew install hemeda3/tap/ayg
 `ayg build` creates `ayg_index/` inside the target repo. Run `ayg search` and `ayg benchmark` from that same repo directory.
 
 ```bash
+# Clone Chromium first if you don't already have it
+mkdir -p "$HOME/code"
+if [ ! -d "$HOME/code/chromium/.git" ]; then
+  git clone --depth=1 https://chromium.googlesource.com/chromium/src "$HOME/code/chromium"
+fi
+
 # Build the index once
-ayg build ~/code/chromium
+ayg build "$HOME/code/chromium"
 
 # Search from inside the indexed repo
-cd ~/code/chromium
+cd "$HOME/code/chromium"
 ayg search "MAX_FILE_SIZE"
 
 # Output modes

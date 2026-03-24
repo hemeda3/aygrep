@@ -1,0 +1,51 @@
+name: Benchmarks
+
+on:
+  workflow_dispatch:
+    inputs:
+      corpus:
+        description: Corpus to benchmark
+        required: true
+        default: both
+        type: choice
+        options:
+          - linux
+          - chromium
+          - both
+
+jobs:
+  benchmark-full:
+    runs-on: ubuntu-latest
+    timeout-minutes: 240
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+
+      - name: Install ayg
+        run: cargo install --path .
+
+      - name: Install ripgrep from source
+        run: |
+          git clone --depth=1 https://github.com/BurntSushi/ripgrep /tmp/ripgrep
+          cd /tmp/ripgrep && cargo install --path .
+
+      - name: Run full benchmark suite
+        run: ./scripts/benchmark-full.sh "${{ inputs.corpus }}"
+        env:
+          AYG_BIN: /home/runner/.cargo/bin/ayg
+          BENCH_DIR: /tmp/ayg-bench
+
+      - name: Publish benchmark summary
+        if: always()
+        run: |
+          if [ -f /tmp/ayg-bench/results.md ]; then
+            cat /tmp/ayg-bench/results.md >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - name: Upload benchmark results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: benchmark-results-${{ inputs.corpus }}
+          path: /tmp/ayg-bench/results.md
+          if-no-files-found: warn

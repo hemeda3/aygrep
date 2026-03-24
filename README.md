@@ -12,8 +12,9 @@
 ---
 
 
-
 ayg builds a sparse n-gram inverted index for code search in large repositories. Build once, then search candidate files instead of rescanning the whole tree.
+
+On this local M3 Max, the Homebrew-installed CLI returned `MAX_FILE_SIZE` from Chromium in `59-64ms` steady-state and `0.25s` after cold prep. The matching `rg -n 'MAX_FILE_SIZE' . >/dev/null` run took `29.24s` warm and `48.20s` after cold prep.
 
 **Built for AI coding agents and humans** who run many searches per session.
 
@@ -26,7 +27,7 @@ Based on reverse-engineering [Cursor's "Fast regex search"](https://cursor.com/b
 ### From binary (recommended)
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/hemeda2/aygrep/main/scripts/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/hemeda3/aygrep/main/scripts/install.sh | bash
 ```
 
 ### From source
@@ -68,16 +69,78 @@ On machines with less than 8GB of available RAM, `ayg build` automatically skips
 
 ## Benchmarks
 
-The benchmark report now uses the same format locally and in GitHub Actions:
+### Customer-facing macOS timings
 
-- device spec
-- build time and index size
-- per-query cold + hot timings for `ayg` and `rg`
-- total search time summary for four rows:
-  Chromium cold, Chromium hot, Linux cold, Linux hot
+These numbers are for the installed Homebrew binary at `/opt/homebrew/bin/ayg`, not `target/release/ayg`.
 
-The push/PR CI job keeps a Linux-kernel benchmark on GitHub Actions runners so CI stays fast.
-On pushes to `main` or `master`, that same CI benchmark job also auto-publishes the latest public benchmark page from GitHub Actions.
+Chromium on this machine:
+
+- checkout size: `9.6G`
+- git-tracked files: `489,298`
+- files indexed by `ayg`: `436,610`
+- query below: `MAX_FILE_SIZE`
+
+The ripgrep comparison command is explicit about the repo path so it searches the tree instead of stdin:
+
+```bash
+/opt/homebrew/bin/rg -n "MAX_FILE_SIZE" . >/dev/null
+```
+
+| Scenario | ayg CLI wall | ayg internal `total=` | rg wall | Speedup |
+|----------|-------------:|----------------------:|--------:|--------:|
+| Warm steady-state | **59-64ms** | **0.5-1.5ms** | **29.24s** | **~460x** |
+| After cold prep (`dd ... && purge`) | **0.25s** | **45.4ms** | **48.20s** | **~193x** |
+
+Representative warm output from the Homebrew binary:
+
+```text
+MAX_FILE_SIZE             tri= 2  cand=    24  match=    33  files=   15  idx=    48us  scan=     0.4ms  total=     0.5ms
+```
+
+The important distinction is that the `total=` field is the search core after the process is already hot. The shell command a customer runs also pays process startup and index-open cost.
+
+### Benchmark report samples
+
+Latest public benchmark report:
+
+- [https://hemeda3.github.io/aygrep/](https://hemeda3.github.io/aygrep/)
+
+#### GitHub Actions sample
+
+March 24, 2026. `ubuntu-latest` runner, Linux kernel corpus, 79,225 indexed files, 2 vCPU / 7.8 GiB RAM, no `content.bin`.
+
+| Query | ayg cold | ayg hot | rg cold | rg hot | Cold speedup | Hot speedup | Files |
+|-------|---------:|--------:|--------:|-------:|-------------:|------------:|------:|
+| `PM_RESUME` | **144.6ms** | **6.2ms** | 12,794ms | 751ms | **88x** | **121x** | 13 |
+| `EXPORT_SYMBOL_GPL` | **1,304.3ms** | **61.6ms** | 12,787ms | 801ms | **9.8x** | **13x** | 3,130 |
+| `Copyright` | **8,779.8ms** | **462.3ms** | 12,704ms | 1,563ms | **1.4x** | **3.4x** | 49,481 |
+| `mutex_lock` | **1,506.4ms** | **72.2ms** | 12,712ms | 841ms | **8.4x** | **12x** | 5,472 |
+| `struct device` | **4,545.3ms** | **224.6ms** | 12,707ms | 922ms | **2.8x** | **4.1x** | 11,408 |
+
+| State | Build time | ayg total | ayg scan total | rg total | Speedup |
+|-------|-----------:|----------:|---------------:|---------:|--------:|
+| Cold | **29.79s** | **16,280.4ms** | **16,199.8ms** | 63,704.0ms | **3.9x** |
+| Hot | **29.79s** | **826.9ms** | **822.8ms** | 4,878.0ms | **5.9x** |
+
+#### Local macOS sample
+
+March 24, 2026. Apple M3 Max MacBook Pro, Linux kernel corpus, 79,225 indexed files, 36 GB RAM, with `content.bin`.
+
+| Query | ayg cold | ayg hot | rg cold | rg hot | Cold speedup | Hot speedup | Files |
+|-------|---------:|--------:|--------:|-------:|-------------:|------------:|------:|
+| `PM_RESUME` | **7.5ms** | **7.0ms** | 3,047ms | 2,761ms | **406x** | **394x** | 13 |
+| `EXPORT_SYMBOL_GPL` | **29.7ms** | **30.1ms** | 2,811ms | 2,578ms | **95x** | **86x** | 3,129 |
+| `Copyright` | **141.8ms** | **96.7ms** | 2,519ms | 2,550ms | **18x** | **26x** | 49,482 |
+| `mutex_lock` | **46.7ms** | **45.2ms** | 2,582ms | 2,577ms | **55x** | **57x** | 5,471 |
+| `struct device` | **105.8ms** | **75.6ms** | 2,596ms | 2,693ms | **25x** | **36x** | 11,408 |
+
+| State | Build time | ayg total | ayg scan total | rg total | Speedup |
+|-------|-----------:|----------:|---------------:|---------:|--------:|
+| Cold | **22.61s** | **331.5ms** | **328.2ms** | 13,555.0ms | **41x** |
+| Hot | **22.61s** | **254.6ms** | **252.2ms** | 13,159.0ms | **52x** |
+
+On the default macOS case-insensitive filesystem, the Linux kernel checkout has a few case-colliding paths. Treat the GitHub Actions Linux run as the canonical Linux sample when exact file counts matter.
+
 For the full local report on Linux and Chromium, run:
 
 ```bash
@@ -87,7 +150,7 @@ For the full local report on Linux and Chromium, run:
 ```
 
 There is also a manual GitHub Actions workflow named `Benchmarks` for running `linux`, `chromium`, or `both` on demand with the same report format.
-That workflow now generates:
+That workflow generates:
 
 - a formatted public GitHub Pages report
 - a downloadable ZIP package with the full report
@@ -189,7 +252,7 @@ MIT — Copyright (c) 2026 Ahmed Yousri
   title        = {ayg: Indexed code search using sparse n-gram inverted indexes},
   year         = {2026},
   publisher    = {GitHub},
-  howpublished = {\url{https://github.com/hemeda2/aygrep}},
+  howpublished = {\url{https://github.com/hemeda3/aygrep}},
   note         = {Based on reverse engineering of Cursor's sparse n-gram approach}
 }
 ```

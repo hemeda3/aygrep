@@ -11,7 +11,7 @@ RESULTS_FILE="$BENCH_DIR/results.md"
 PUBLIC_DIR="$BENCH_DIR/public"
 
 mkdir -p "$BENCH_DIR"
-exec > >(tee "$RESULTS_FILE") 2>&1
+exec > >(tee "$RESULTS_FILE")
 
 SUMMARY_ROWS=()
 

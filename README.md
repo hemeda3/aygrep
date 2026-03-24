@@ -423,7 +423,7 @@ Break-even: **7 queries** on M3 Max. After that, every search is pure savings.
 ## Reproducing
 
 ```bash
-git clone https://github.com/hemeda2/aygrep.git
+git clone https://github.com/hemeda3/aygrep.git
 cd aygrep && cargo build --release
 ./scripts/benchmark.sh    # clones Chromium, builds index, runs ayg vs rg
 ```
@@ -457,7 +457,7 @@ MIT — Copyright (c) 2026 Ahmed Yousri
 
 ## Author
 
-**Ahmed Yousri** — [github.com/hemeda2](https://github.com/hemeda2)
+**Ahmed Yousri** — [github.com/hemeda3](https://github.com/hemeda3)
 
 ## Citation
 

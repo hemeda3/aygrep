@@ -1,4 +1,5 @@
 name: Release
+
 on:
   push:
     tags: ['v*']
@@ -7,7 +8,28 @@ permissions:
   contents: write
 
 jobs:
+  test:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - run: cargo test
+      - run: cargo build --release
+      - name: Smoke test
+        run: |
+          git config --global user.email "ci@ayg.dev"
+          git config --global user.name "ayg-ci"
+          mkdir -p /tmp/test-repo
+          echo 'fn main() { println!("hello"); }' > /tmp/test-repo/test.rs
+          cd /tmp/test-repo && git init && git add . && git commit -m "init"
+          $GITHUB_WORKSPACE/target/release/ayg build .
+          $GITHUB_WORKSPACE/target/release/ayg search "println"
+
   build:
+    needs: test
     strategy:
       matrix:
         include:
@@ -23,10 +45,6 @@ jobs:
           - target: aarch64-apple-darwin
             os: macos-latest
             name: ayg-macos-arm64
-          # Windows disabled — unix-only pread/mmap APIs not yet ported
-          # - target: x86_64-pc-windows-msvc
-          #   os: windows-latest
-          #   name: ayg-windows-amd64.exe
 
     runs-on: ${{ matrix.os }}
     steps:
@@ -48,42 +66,14 @@ jobs:
         run: cargo build --release --target ${{ matrix.target }}
 
       - name: Package
-        shell: bash
         run: |
-          if [[ "${{ matrix.os }}" == "windows-latest" ]]; then
-            cp target/${{ matrix.target }}/release/ayg.exe ${{ matrix.name }}
-          else
-            cp target/${{ matrix.target }}/release/ayg ${{ matrix.name }}
-            chmod +x ${{ matrix.name }}
-          fi
+          cp target/${{ matrix.target }}/release/ayg ${{ matrix.name }}
+          chmod +x ${{ matrix.name }}
+          shasum -a 256 ${{ matrix.name }} > ${{ matrix.name }}.sha256 2>/dev/null || sha256sum ${{ matrix.name }} > ${{ matrix.name }}.sha256
 
-      - name: Generate SHA256
-        shell: bash
-        run: |
-          if [[ "${{ matrix.os }}" == "macos-latest" ]]; then
-            shasum -a 256 ${{ matrix.name }} > ${{ matrix.name }}.sha256
-          else
-            sha256sum ${{ matrix.name }} > ${{ matrix.name }}.sha256
-          fi
-
-      - name: Upload Release Asset
+      - name: Upload Release Assets
         uses: softprops/action-gh-release@v2
         with:
           files: |
             ${{ matrix.name }}
             ${{ matrix.name }}.sha256
-
-  checksums:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - name: Download all artifacts
-        uses: actions/download-artifact@v4
-
-      - name: Create checksums.txt
-        run: cat *.sha256 > checksums.txt
-
-      - name: Upload checksums
-        uses: softprops/action-gh-release@v2
-        with:
-          files: checksums.txt

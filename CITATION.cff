@@ -1,0 +1,47 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+type: software
+title: "ayg: Indexed code search using sparse n-gram inverted indexes"
+authors:
+  - family-names: "Yousri"
+    given-names: "Ahmed"
+    alias: "hemeda3"
+    orcid: ""
+version: 0.1.0
+date-released: 2024-03-24
+url: "https://github.com/hemeda3/aygrep"
+repository-code: "https://github.com/hemeda3/aygrep"
+license: MIT
+keywords:
+  - code-search
+  - inverted-index
+  - sparse-ngrams
+  - grep
+  - trigram
+  - rust
+  - ai-agents
+abstract: >-
+  ayg is an indexed code search tool that uses sparse n-gram inverted indexes
+  with frequency-weighted boundaries to search large codebases 1,000x faster
+  than ripgrep. Designed for AI coding agents and human developers. The approach
+  was reverse-engineered from Cursor's published sparse n-gram technique.
+references:
+  - type: article
+    title: "Fast regex search: indexing text for agent tools"
+    authors:
+      - family-names: "Marti"
+        given-names: "Vicent"
+    url: "https://cursor.com/blog/fast-regex-search"
+    year: 2026
+  - type: software
+    title: "ripgrep"
+    authors:
+      - family-names: "Gallant"
+        given-names: "Andrew"
+        alias: "BurntSushi"
+    url: "https://github.com/BurntSushi/ripgrep"
+  - type: software
+    title: "Zoekt"
+    authors:
+      - name: "Google / Sourcegraph"
+    url: "https://github.com/sourcegraph/zoekt"

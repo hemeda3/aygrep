@@ -1,0 +1,27 @@
+[package]
+name = "aygrep"
+version = "0.1.0"
+edition = "2021"
+authors = ["Ahmed Yousri"]
+description = "Indexed code search — instant grep for large monorepos"
+repository = "https://github.com/hemeda3/aygrep"
+license = "MIT"
+readme = "README.md"
+keywords = ["grep", "search", "code-search", "trigram", "index"]
+categories = ["command-line-utilities", "development-tools"]
+
+[[bin]]
+name = "ayg"
+path = "src/main.rs"
+
+[dependencies]
+memchr = "2"
+memmap2 = "0.9"
+libc = "0.2"
+
+[profile.release]
+opt-level = 3
+lto = true
+codegen-units = 1
+panic = "abort"
+strip = true
